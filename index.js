@@ -1,7 +1,9 @@
 import fetch from 'node-fetch'
 import moment from 'moment'
 
+const sleep = (s=1) => new Promise((resolve)=> setTimeout(resolve, 1 * 1000))
 
+let current
 let cached_schedule
 
 async function load() {
@@ -22,13 +24,17 @@ async function main() {
 
   const now = moment()
   const next = cached_schedule.find(s => moment(s.StartTime).isAfter(now))
+  
 
   if(!next) {
     await load()
     return
   }
 
-  const countdown = moment(next.StartTime).add(60, 'seconds').diff(now)
+  // Seems to be the normalized off-by-a-heck-off-a-lot magic number
+  // that actually makes it accurate.
+  const countdown = moment(next.StartTime).diff(now)
+
   const duration = moment.duration(countdown)
   const minutes = ('' + duration.minutes()).padStart(2, '0')
   const seconds = ('' + duration.seconds()).padStart(2, '0')
@@ -45,9 +51,15 @@ async function main() {
 =#####%#+  %@-   =%%+. .+#%####@@= +#####%#+ :#####%%*:      +#:....: 
                               -@@-          meg i ræven       -%@@#.  
 
-  NESTE BYBANE SKAL LIKSOM ANKOMME OM:
+  NESTE BYBANE SKAL LIKSOM GÅ OM:
                 ${minutes}m ${seconds}s
   `)
+
+  if(current && current.StartTime !== next.StartTime) {
+    current = next
+    await sleep(90)
+  }
+  setTimeout(main, 1000)
 }
 
-setInterval(main, 1000)
+setTimeout(main, 1000)
