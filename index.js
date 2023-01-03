@@ -7,7 +7,7 @@ let cached_schedule
 async function load() {
   console.log('Fetching schedule...')
   const url = `https://skyss-reise.giantleap.no/v4/travelplans?FromLocation=60.365752,5.345101&ToLocation=60.39181,5.326784&FromName=Mindemyren%20bybanestopp,%20Bergen&ToName=Kaigaten,%20Bergen&FromStopGroupID=NSR:StopPlace:62125&ToStopGroupID=NSR:StopPlace:62130&TimeType=DEPARTURE&TS=${new Date().toISOString()}&modes=airportbus,boat,bus,expressbus,others,train,tram&minimumTransferTime=120&walkSpeed=normal`
-  console.log(url)
+
   const response = await fetch(url)
   const json = await response.json()
 
@@ -32,6 +32,7 @@ async function main() {
   const duration = moment.duration(countdown)
   const minutes = ('' + duration.minutes()).padStart(2, '0')
   const seconds = ('' + duration.seconds()).padStart(2, '0')
+  
   console.clear()
   
   console.log(`
